@@ -1,0 +1,35 @@
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package.json .
+COPY yarn.lock .
+
+RUN yarn add rimraf -D
+RUN yarn install
+
+COPY . .
+RUN yarn prebuild
+RUN yarn build
+# Verificar si dist/ se generó correctamente
+RUN echo "📂 Verificando contenido de /app/dist después de build..." && ls -la /app/dist
+
+#---
+
+FROM node:20
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package.json .
+COPY yarn.lock .
+COPY ormconfig.js .
+
+RUN yarn install --production
+
+COPY --from=build /app/dist ./dist
+
+EXPOSE 5000
+
+ENTRYPOINT [ "yarn", "start:prod" ]

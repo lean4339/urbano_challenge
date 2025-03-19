@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definir variables de color y fuente en :root */
+:root {
+  --brand-primary: #c1292e;
+  --brand-background: #ffffff;
+  --brand-active: #c1292e;
+  --brand-header-background: #e2e1e1;
+  --primary-red: #c1292e;
+  --red-hover: #c1292e;
+  --primary-white: #ffffff;
+  --white-hover: #f2f2f2;
+}
+
+/* Aplicar fuente global */
+body {
+  font-family: 'Roboto', 'Helvetica', 'Helvetica Neue', 'Nunito Sans', sans-serif;
+  background-color: var(--brand-background);
+  color: var(--brand-primary);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+  h1 {
+    @apply text-2xl text-gray-700;
+  }
+  h2 {
+    @apply text-xl text-gray-700;
+  }
+  h3 {
+    @apply text-lg text-gray-700;
+  }
+  a {
+    color: var(--primary-red);
+    text-decoration: underline;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply p-3 rounded-md focus:outline-none transition-all focus:ring disabled:opacity-50;
+    background-color: var(--brand-primary);
+    color: white;
+  }
+
+  .btn:hover {
+    background-color: var(--red-hover);
+  }
+
+  .btn.danger {
+    background-color: var(--primary-red);
+  }
+
+  .btn.danger:hover {
+    background-color: var(--red-hover);
+  }
+
+  .input {
+    @apply rounded-md border-gray-300 transition-colors disabled:opacity-50;
+  }
+
+  .card {
+    @apply p-5 rounded-md border shadow;
+    background-color: var(--primary-white);
+  }
+
+  .table-container {
+    @apply border rounded-lg mt-5 shadow overflow-x-auto;
+  }
+
+  .table-filter {
+    @apply flex flex-col lg:flex-row gap-5 rounded-lg p-3 shadow overflow-x-auto border;
+  }
+
+  .sidebar {
+    @apply fixed h-full w-72 p-5 shadow flex flex-col transform -translate-x-72 lg:translate-x-0 transition-transform;
+    background-color: var(--primary-white);
+  }
+
+  .sidebar.show {
+    @apply translate-x-0 !important;
+  }
+}
