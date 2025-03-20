@@ -1,10 +1,17 @@
-import { Controller, Get, Param, NotFoundException, Post, Req, Res} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { createReadStream, promises as fs } from 'fs';
 import { extname, join } from 'path';
 import { ContentService } from '../content/content.service';
 @Controller('uploads')
 export class UploadController {
-  
   constructor(private readonly contentService: ContentService) {}
 
   @Get(':filename')
@@ -25,23 +32,28 @@ export class UploadController {
       const fileStream = createReadStream(filePath);
       fileStream.pipe(res); // ✅ Envía la imagen correctamente
     } catch (error) {
-      console.error("❌ Error cargando la imagen:", error);
+      console.error('❌ Error cargando la imagen:', error);
       throw new NotFoundException('Imagen no encontrada');
     }
   }
   @Post('image/:contentId')
-  async uploadImage(@Param('contentId') contentId: string, @Req() req): Promise<{ message: string; imageUrl: string }> {
+  async uploadImage(
+    @Param('contentId') contentId: string,
+    @Req() req,
+  ): Promise<{ message: string; imageUrl: string }> {
     return new Promise((resolve, reject) => {
       const chunks = [];
       const uploadDir = join(__dirname, '..', '..', 'uploads');
-      let filename = `content-${contentId}-${Date.now()}.jpg`;
       let originalExtension = 'jpg'; // Default to jpg
       req.on('data', (chunk) => {
+        console.log('Received a chunk of data');
         chunks.push(chunk);
       });
 
       req.on('end', async () => {
         const buffer = Buffer.concat(chunks);
+        console.log('Finished receiving data');
+        console.log('Buffer size:', buffer.length);
 
         try {
           const filenameHeader = req.headers['x-filename']; // Expect frontend to send this
@@ -49,7 +61,7 @@ export class UploadController {
             originalExtension = extname(filenameHeader).slice(1); // Remove dot
           }
           if (!['jpg', 'jpeg', 'png', 'gif'].includes(originalExtension)) {
-            throw new Error("Unsupported file format");
+            throw new Error('Unsupported file format');
           }
 
           // 🔥 Generate filename with correct extension

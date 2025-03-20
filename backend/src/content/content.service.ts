@@ -24,9 +24,18 @@ export class ContentService {
     }).save();
   }
 
-  async findAll(contentQuery: ContentQuery): Promise<{ data: Content[]; totalPages: number; totalItems: number }> {
+  async findAll(
+    contentQuery: ContentQuery,
+  ): Promise<{ data: Content[]; totalPages: number; totalItems: number }> {
     const where: FindConditions<Content> = {};
-    const { name, description, page = 1, limit = 10, orderBy = 'name', orderDir = 'ASC' } = contentQuery;
+    const {
+      name,
+      description,
+      page = 1,
+      limit = 10,
+      orderBy = 'name',
+      orderDir = 'ASC',
+    } = contentQuery;
 
     // Aplicar filtros solo si existen
     if (name) where.name = ILike(`%${name}%`);
@@ -42,13 +51,12 @@ export class ContentService {
 
     // Obtener contenido y total de elementos
     const [contentsDb, totalItems] = await Content.findAndCount(options);
-  
+
     // Calcular total de páginas
     const totalPages = Math.ceil(totalItems / limit);
-  
-    return { data: contentsDb, totalPages, totalItems };
-}
 
+    return { data: contentsDb, totalPages, totalItems };
+  }
 
   async findById(id: string): Promise<Content> {
     const content = await Content.findOne(id);
@@ -73,20 +81,31 @@ export class ContentService {
     }
     return content;
   }
-  
 
   async findAllByCourseId(
     courseId: string,
-    contentQuery: ContentQuery
-  ): Promise<{ data: Content[]; totalPages: number; totalItems: number; page: number; limit: number }> {
-    
+    contentQuery: ContentQuery,
+  ): Promise<{
+    data: Content[];
+    totalPages: number;
+    totalItems: number;
+    page: number;
+    limit: number;
+  }> {
     const where: FindConditions<Content> = { courseId };
-    const { name, description, page = 1, limit = 10, orderBy = 'name', orderDir = 'ASC' } = contentQuery;
-  
+    const {
+      name,
+      description,
+      page = 1,
+      limit = 10,
+      orderBy = 'name',
+      orderDir = 'ASC',
+    } = contentQuery;
+
     // Aplicar filtros opcionales
     if (name) where.name = ILike(`%${name}%`);
     if (description) where.description = ILike(`%${description}%`);
-  
+
     // Configurar opciones de consulta
     const options: FindManyOptions<Content> = {
       where,
@@ -94,16 +113,15 @@ export class ContentService {
       take: limit,
       skip: (page - 1) * limit,
     };
-  
+
     // Obtener contenidos filtrados y total de elementos
     const [contentsDb, totalItems] = await Content.findAndCount(options);
-    
+
     // Calcular total de páginas
     const totalPages = Math.ceil(totalItems / limit);
-  
+
     return { data: contentsDb, totalItems, totalPages, page, limit };
   }
-  
 
   async update(
     courseId: string,
@@ -116,7 +134,6 @@ export class ContentService {
   async updateContentImage(contentId: string, imageUrl: string): Promise<void> {
     await Content.update({ id: contentId }, { url: imageUrl });
   }
-  
 
   async delete(courseId: string, id: string): Promise<string> {
     const content = await this.findByCourseIdAndId(courseId, id);
@@ -127,24 +144,35 @@ export class ContentService {
   async count(): Promise<number> {
     return await Content.count();
   }
-  async findLatestUpdates(limit: number = 5): Promise<{ data: { id: string; course: string; update: string; url: string, date: string }[]; totalPages: number; totalItems: number }> {
+  async findLatestUpdates(
+    limit: number = 5,
+  ): Promise<{
+    data: {
+      id: string;
+      course: string;
+      update: string;
+      url: string;
+      date: string;
+    }[];
+    totalPages: number;
+    totalItems: number;
+  }> {
     const [contents, totalItems] = await Content.findAndCount({
-      order: { dateCreated: "DESC" },
+      order: { dateCreated: 'DESC' },
       take: limit,
-      relations: ["course"], // Aquí se hace el JOIN con la tabla Course
+      relations: ['course'], // Aquí se hace el JOIN con la tabla Course
     });
-  
+
     const formattedContents = contents.map((content) => ({
       id: content.id,
-      course: content.course?.name ?? "Curso desconocido", // Verificamos que haya curso
+      course: content.course?.name ?? 'Curso desconocido', // Verificamos que haya curso
       update: content.description,
       date: content.dateCreated.toISOString(),
       url: content.url,
     }));
-  
+
     const totalPages = Math.ceil(totalItems / limit);
-  
+
     return { data: formattedContents, totalPages, totalItems };
   }
-  
 }

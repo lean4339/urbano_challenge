@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ILike, FindConditions, FindManyOptions } from 'typeorm';
 
-
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserQuery } from './user.query';
@@ -24,7 +23,9 @@ export class UserService {
     return User.create(createUserDto).save();
   }
 
-  async findAll(userQuery: UserQuery): Promise<{data:User[], totalPages: number, totalItems: number}> {
+  async findAll(
+    userQuery: UserQuery,
+  ): Promise<{ data: User[]; totalPages: number; totalItems: number }> {
     const where: FindConditions<User> = {};
     const {
       firstName,
@@ -59,10 +60,10 @@ export class UserService {
       take: limit,
       skip: (page - 1) * limit,
     });
-  
+
     // Calcular total de páginas
     const totalPages = Math.ceil(totalItems / limit);
-  
+
     return { data: usersDb, totalPages, totalItems };
   }
 

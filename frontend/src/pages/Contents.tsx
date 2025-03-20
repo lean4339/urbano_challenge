@@ -168,7 +168,11 @@ export default function Course() {
             type="file"
             className="input"
             accept="image/*"
-            onChange={(e) => setFile(e.target.files[0])} // Guardamos la imagen en el estado
+            onChange={(e) => {
+              const selectedFile = e.target.files[0];
+              console.log('📸 Archivo seleccionado:', selectedFile);
+              setFile(selectedFile);
+            }}
           />
           <button className="btn" disabled={isSubmitting}>
             {isSubmitting ? (

@@ -16,7 +16,8 @@
 
 /* Aplicar fuente global */
 body {
-  font-family: 'Roboto', 'Helvetica', 'Helvetica Neue', 'Nunito Sans', sans-serif;
+  font-family: 'Roboto', 'Helvetica', 'Helvetica Neue', 'Nunito Sans',
+    sans-serif;
   background-color: var(--brand-background);
   color: var(--brand-primary);
 }

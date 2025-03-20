@@ -7,6 +7,7 @@ COPY yarn.lock .
 
 
 RUN yarn install
+RUN npx prettier --write .
 COPY . .
 RUN yarn build
 

@@ -36,13 +36,13 @@ class ContentService {
         file: null,
       },
     );
-    const formData = new FormData();
-    formData.append('file', createContentRequest.file);
-
-    await apiService.post(`/api/uploads/image/${data.data.id}`, formData, {
+    const arrayBuffer = await createContentRequest.file.arrayBuffer();
+    console.log('📏 Tamaño del arrayBuffer:', arrayBuffer.byteLength);
+    await apiService.post(`/api/uploads/image/${data.data.id}`, arrayBuffer, {
       headers: {
-        'x-filename': createContentRequest.file.name, // ✅ Sends original filename
-      }, // ✅ Let the browser set the actual file type
+        'Content-Type': createContentRequest.file.type, // Enviar el tipo correcto (ej. image/png)
+        'X-Filename': createContentRequest.file.name, // Pasamos el nombre del archivo
+      },
     });
   }
 

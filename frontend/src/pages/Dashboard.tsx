@@ -16,8 +16,8 @@ export default function Dashboard() {
     isLoading: isLoadingUpdates,
   } = useQuery('latestUpdates', () => contentService.findLatestUpdates());
   function getImageUrl(url) {
-    if (!url) return "/img/error.png"; // Fallback image if URL is missing
-    if (url.startsWith("data:image")) return url; // ✅ If it's already Base64, use it directly
+    if (!url) return '/img/error.png'; // Fallback image if URL is missing
+    if (url.startsWith('data:image')) return url; // ✅ If it's already Base64, use it directly
     return `/api${url}`; // ✅ Use normal URL if it's not Base64
   }
   return (
@@ -70,7 +70,7 @@ export default function Dashboard() {
                       <img
                         src={`/api${url}`}
                         alt={course}
-                        className="w-20 h-20 rounded-full"
+                        className="w-20 h-20 rounded-2"
                       />
                     ) : (
                       <p className="text-gray-500">Imagen no disponible</p>

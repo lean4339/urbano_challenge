@@ -14,9 +14,24 @@ export class CourseService {
     }).save();
   }
 
-  async findAll(courseQuery: CourseQuery): Promise<{ data: Course[];totalPages: number; totalItems: number; page: number; limit: number  }> {
+  async findAll(
+    courseQuery: CourseQuery,
+  ): Promise<{
+    data: Course[];
+    totalPages: number;
+    totalItems: number;
+    page: number;
+    limit: number;
+  }> {
     const where: FindConditions<Course> = {};
-    const { name, description, page = 1, limit = 10, orderBy = 'name', orderDir = 'ASC' } = courseQuery;
+    const {
+      name,
+      description,
+      page = 1,
+      limit = 10,
+      orderBy = 'name',
+      orderDir = 'ASC',
+    } = courseQuery;
 
     // Aplicar filtros solo si existen
     if (name) where.name = ILike(`%${name}%`);
@@ -32,13 +47,12 @@ export class CourseService {
 
     // Obtener cursos y total de elementos
     const [coursesDb, totalItems] = await Course.findAndCount(options);
-  
+
     // Calcular total de páginas
     const totalPages = Math.ceil(totalItems / limit);
-  
-    return { data: coursesDb, totalPages, totalItems, page, limit };
-}
 
+    return { data: coursesDb, totalPages, totalItems, page, limit };
+  }
 
   async findById(id: string): Promise<Course> {
     const course = await Course.findOne(id);
